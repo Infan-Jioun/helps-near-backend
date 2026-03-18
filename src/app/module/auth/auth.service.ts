@@ -33,11 +33,31 @@ const loginUser = async (paylaod: ILoginUserPayload) => {
     })
     console.log(data)
     if (!data.user) {
-        throw new AppError(status.UNAUTHORIZED ,"You are not User")
+        throw new AppError(status.UNAUTHORIZED, "You are not User")
     }
     return data;
 }
+const verifyEmail = async (otp: string, email: string) => {
+    const result = await auth.api.verifyEmailOTP({
+        body: {
+            email,
+            otp
+        }
+    })
+    if (result.status && !result.user.emailVerified) {
+        await prisma.user.update({
+            where: {
+                id: result.user.id
+            },
+            data: {
+                emailVerified: true
+            }
+        })
+    }
+    return result;
+}
 export const authService = {
     createUser,
-    loginUser
+    loginUser,
+    verifyEmail
 }

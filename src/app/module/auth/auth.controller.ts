@@ -33,7 +33,20 @@ const loginUser = catchAsync(
     }
 
 )
+const verifyEmail = catchAsync(
+    async (req: Request, res: Response) => {
+        const { otp, email } = req.body;
+        const result = await authService.verifyEmail(otp, email);
+        sendResposne(res, {
+            httpStatusCode: status.OK,
+            success: true,
+            message: `Successfully email verfied ${email}`,
+            data: result
+        })
+    }
+)
 export const authController = {
     createUser,
-    loginUser
+    loginUser,
+    verifyEmail
 }

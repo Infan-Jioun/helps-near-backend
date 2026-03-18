@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { Role } from "../../generated/prisma/enums";
 import { bearer, emailOTP } from "better-auth/plugins";
+import { sendEmail } from "../utils/email";
 
 
 export const auth = betterAuth({
@@ -43,11 +44,25 @@ export const auth = betterAuth({
                         }
                     })
                     if (user && !user.emailVerified) {
-                        // 
+                        sendEmail({
+                            to: email,
+                            subject: "Verify your email",
+                            templateName: otp,
+                            templateData: {
+                                name: user.name,
+                                otp
+                            },
+                            attachments: []
+                        })
+
                     }
                 }
-            }
+            },
+            expiresIn: 2 * 60,
+            otpLength: 6
         })
-    ]
-
+    ],
+    trustedOrigins: [
+        process.env.BETTER_AUTH_URL || "http://localhost:5000", envConfig.FRONTEND_URL || "http://localhost:3000"
+    ],
 });
