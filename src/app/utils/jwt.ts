@@ -25,3 +25,8 @@ const decodeToken = (token: string) => {
     const decode = jwt.decode(token) as JwtPayload
     return decode
 }
+export const jwtUtils = {
+    createToken,
+    verifyToken,
+    decodeToken
+}
