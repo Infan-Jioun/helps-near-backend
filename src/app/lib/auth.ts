@@ -47,7 +47,7 @@ export const auth = betterAuth({
                         sendEmail({
                             to: email,
                             subject: "Verify your email",
-                            templateName: otp,
+                            templateName: "otp",
                             templateData: {
                                 name: user.name,
                                 otp
@@ -58,7 +58,7 @@ export const auth = betterAuth({
                     }
                 }
             },
-            expiresIn: 2 * 60,
+            expiresIn: 10 * 60,
             otpLength: 6
         })
     ],
