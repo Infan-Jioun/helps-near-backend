@@ -47,8 +47,13 @@ const verifyEmail = async (otp: string, email: string) => {
     }
     return result;
 }
+const logout = async () => {
+    const result = await auth.api.signOut();
+    return result
+}
 export const authService = {
     createUser,
     loginUser,
-    verifyEmail
+    verifyEmail,
+    logout
 }

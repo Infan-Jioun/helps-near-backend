@@ -45,8 +45,18 @@ const verifyEmail = catchAsync(
         })
     }
 )
+const logout = catchAsync(async (req: Request, res: Response) => {
+    const result = await authService.logout();
+    sendResposne(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: "Successfully Logout!",
+        data: result
+    })
+});
 export const authController = {
     createUser,
     loginUser,
-    verifyEmail
+    verifyEmail,
+    logout
 }
