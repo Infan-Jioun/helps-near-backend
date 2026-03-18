@@ -5,8 +5,11 @@ import { notFound } from "./middleware/notFound";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import { authRouter } from "./app/module/auth/auth.router";
+import path from "path";
 const app: Application = express();
 app.use(express.json());
+app.set("view engine", "ejs")
+app.set("views", path.resolve(process.cwd(), `src/app/templates`))
 app.use(cors({
     origin: [envConfig.FRONTEND_URL || "http://localhost:3000", envConfig.BETTER_AUTH_URL || "http://localhost:5000"],
     credentials: true,
