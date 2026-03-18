@@ -4,3 +4,7 @@ export interface ICreateUserPayload {
     password: string
 
 }
+export interface ILoginUserPayload {
+    email: string,
+    password: string
+}

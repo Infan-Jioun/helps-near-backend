@@ -30,6 +30,43 @@ enum BloodGroup {
   O_NEGATIVE
 }
 
+enum EmergencyType {
+  MEDICAL
+  FIRE
+  ACCIDENT
+  FLOOD
+  CRIME
+  OTHER
+}
+
+enum EmergencyStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  RESOLVED
+  CANCELLED
+}
+
+enum VolunteerSkill {
+  FIRST_AID
+  FIREFIGHTING
+  RESCUE
+  MEDICAL
+  FLOOD_RESPONSE
+  GENERAL
+}
+
+enum PaymentMethod {
+  STRIPE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
 model User {
   id            String      @id @default(uuid())
   name          String
@@ -46,8 +83,17 @@ model User {
   bloodGroup    BloodGroup?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+
+  sessions         Session[]
+  accounts         Account[]
+  adminProfile     AdminProfile?
+  volunteerProfile VolunteerProfile?
+  emergencies      Emergency[]         @relation("UserEmergencies")
+  responses        VolunteerResponse[] @relation("VolunteerResponses")
+  payments         Payment[]
+  ratingsGiven     Rating[]            @relation("RatingsGiven")
+  ratingsReceived  Rating[]            @relation("RatingsReceived")
+  notifications    Notification[]
 
   @@unique([email])
   @@map("user")
@@ -99,4 +145,142 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model AdminProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  designation String?
+  contactNo   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_profile")
+}
+
+model VolunteerProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nidNumber     String?          @unique
+  skills        VolunteerSkill[]
+  isVerified    Boolean          @default(false)
+  totalHelped   Int              @default(0)
+  averageRating Float            @default(0.0)
+  bio           String?
+  latitude      Float?
+  longitude     Float?
+  lastSeenAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("volunteer_profile")
+}
+
+model Emergency {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation("UserEmergencies", fields: [userId], references: [id])
+
+  type        EmergencyType
+  status      EmergencyStatus @default(PENDING)
+  description String?
+  imageUrl    String?
+  latitude    Float
+  longitude   Float
+  address     String?
+  district    String?
+  isPriority  Boolean         @default(false)
+
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  responses VolunteerResponse[]
+  payment   Payment?
+  rating    Rating?
+
+  @@index([status])
+  @@index([userId])
+  @@index([latitude, longitude])
+  @@map("emergency")
+}
+
+model VolunteerResponse {
+  id          String    @id @default(uuid())
+  emergencyId String
+  emergency   Emergency @relation(fields: [emergencyId], references: [id])
+
+  volunteerId String
+  volunteer   User   @relation("VolunteerResponses", fields: [volunteerId], references: [id])
+
+  acceptedAt          DateTime  @default(now())
+  arrivedAt           DateTime?
+  estimatedArrivalMin Int?
+
+  @@unique([emergencyId, volunteerId])
+  @@index([volunteerId])
+  @@map("volunteer_response")
+}
+
+model Payment {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  emergencyId String    @unique
+  emergency   Emergency @relation(fields: [emergencyId], references: [id])
+
+  amount        Float
+  currency      String        @default("BDT")
+  method        PaymentMethod
+  transactionId String?       @unique
+  status        PaymentStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("payment")
+}
+
+model Rating {
+  id          String    @id @default(uuid())
+  emergencyId String    @unique
+  emergency   Emergency @relation(fields: [emergencyId], references: [id])
+
+  fromUserId String
+  from       User   @relation("RatingsGiven", fields: [fromUserId], references: [id])
+
+  toUserId String
+  to       User   @relation("RatingsReceived", fields: [toUserId], references: [id])
+
+  score   Int
+  comment String?
+
+  createdAt DateTime @default(now())
+
+  @@map("rating")
+}
+
+model Notification {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title  String
+  body   String
+  type   String
+  isRead Boolean @default(false)
+  data   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notification")
 }
