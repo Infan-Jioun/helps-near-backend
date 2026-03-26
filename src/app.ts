@@ -9,8 +9,8 @@ import { authRouter } from "./app/module/auth/auth.router";
 import path from "path";
 import qs from "qs";
 const app: Application = express();
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs")
 app.set("views", path.resolve(process.cwd(), `src/app/templates`))
 app.use(cors({

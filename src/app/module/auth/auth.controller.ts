@@ -11,6 +11,7 @@ import { cookieUtils } from "../../utils/cookie";
 const createUser = catchAsync(
     async (req: Request, res: Response) => {
         const payload = req.body;
+        console.log("User info",payload)
         const result = await authService.createUser(payload as ICreateUserPayload);
         const { accessToken, refreshToken, token, ...rest } = result;
 

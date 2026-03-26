@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -70,7 +70,7 @@ enum PaymentStatus {
 model User {
   id            String      @id @default(uuid())
   name          String
-  email         String
+  email         String      @unique
   emailVerified Boolean     @default(false)
   phone         String?
   role          Role        @default(USER)
@@ -95,7 +95,6 @@ model User {
   ratingsReceived  Rating[]            @relation("RatingsReceived")
   notifications    Notification[]
 
-  @@unique([email])
   @@map("user")
 }
 
