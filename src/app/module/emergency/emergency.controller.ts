@@ -8,7 +8,6 @@ import { ICreateEmargency } from "./emergency.interface";
 const createEmargency = catchAsync(
     async (req: Request, res: Response) => {
         const userId = req.user?.userId;
-        const userRole = req.user?.role;
         const payload = req.body;
         const result = await emargencyService.createEmargency(userId as string, payload as ICreateEmargency);
         sendResposne(res, {
@@ -23,7 +22,7 @@ const getAllEmargencies = catchAsync(async (req: Request, res: Response) => {
     const result = await emargencyService.getAllEmargencies();
     sendResposne(res, {
         httpStatusCode: status.OK,
-        message: "Emergencies fetched successfully",
+        message: "Emergencies fetched successfully!",
         success: true,
         data: result,
     });
@@ -42,7 +41,7 @@ const getEmargencyById = catchAsync(async (req: Request, res: Response) => {
 
 const updateEmargency = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const userId = req.user?.id as string;
+    const userId = req.user?.userId;
     const userRole = req.user?.role as string;
     const result = await emargencyService.updateEmargency(id as string, userId, userRole, req.body);
     sendResposne(res, {
@@ -55,7 +54,7 @@ const updateEmargency = catchAsync(async (req: Request, res: Response) => {
 
 const deleteEmargency = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const userId = req.user?.id;
+    const userId = req.user?.userId;
     const userRole = req.user?.role as string;
     const result = await emargencyService.deleteEmargency(id as string, userId, userRole);
     sendResposne(res, {

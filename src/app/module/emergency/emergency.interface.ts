@@ -10,3 +10,12 @@ export interface ICreateEmargency {
     district?: string;
     isPriority?: boolean;
 }
+export interface IUpdateEmergency {
+    status?: EmergencyStatus;
+    description?: string;
+    imageUrl?: string;
+    address?: string;
+    district?: string;
+    isPriority?: boolean;
+    resolvedAt?: Date;
+}

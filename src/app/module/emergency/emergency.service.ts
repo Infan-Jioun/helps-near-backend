@@ -1,4 +1,5 @@
-import { prisma } from "../../lib/prisma"
+
+import { prisma } from "../../lib/prisma";
 import { ICreateEmargency } from "./emergency.interface"
 
 const createEmargency = async (userId: string, payload: ICreateEmargency) => {
