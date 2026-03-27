@@ -10,6 +10,7 @@ import path from "path";
 import qs from "qs";
 import { emergencyRouter } from "./app/module/emergency/emergency.router";
 import { globalErrorHandlar } from "./middleware/globalHandelError";
+import { userRouter } from "./app/module/user/user.router";
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +26,7 @@ app.set("query parser", (str: string) => qs.parse(str));
 app.use("/api/auth", toNodeHandler(auth))
 app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/emergency", emergencyRouter)
 app.get('/', (req, res) => {
     res.send("Helps Near successfully running")
