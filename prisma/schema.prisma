@@ -99,6 +99,8 @@ model AdminProfile {
 model VolunteerProfile {
   id            String           @id @default(uuid())
   userId        String           @unique
+  name          String
+  email         String           @unique
   nidNumber     String?          @unique
   skills        VolunteerSkill[]
   isVerified    Boolean          @default(false)
