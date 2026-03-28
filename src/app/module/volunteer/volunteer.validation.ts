@@ -13,6 +13,5 @@ export const updateVolunteerProfileSchema = z.object({
 });
 
 export const volunteerValidation = {
-
     updateVolunteerProfileSchema,
 };

@@ -4,6 +4,7 @@ import { VolunteerSkill } from "../../../generated/prisma/enums";
 
 
 export interface IUpdateVolunteerProfile {
+    name?: string,
     nidNumber?: string;
     skills?: VolunteerSkill[];
     bio?: string;
