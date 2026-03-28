@@ -1,5 +1,5 @@
 import status from "http-status";
-import { Prisma } from "../../../generated/prisma/client";
+import { Prisma, Role } from "../../../generated/prisma/client";
 import AppError from "../../errorHelper/appError";
 import { prisma } from "../../lib/prisma";
 import { ICreateVolunteerProfile, IUpdateMyProfile, IUpdateUserRole, IUpdateUserStatus, IUserFilterRequest, } from "./user.interface";
@@ -22,7 +22,7 @@ const createVolunteer = async (payload: ICreateVolunteerProfile) => {
             name,
             email,
             password,
-            role: "VOLUNTEER",
+            role: Role.VOLUNTEER
         },
     });
 

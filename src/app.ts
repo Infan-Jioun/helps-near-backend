@@ -12,6 +12,7 @@ import { emergencyRouter } from "./app/module/emergency/emergency.router";
 import { globalErrorHandlar } from "./middleware/globalHandelError";
 import { userRouter } from "./app/module/user/user.router";
 import { volunteerRouter } from "./app/module/volunteer/volunteer.router";
+import { volunteerResponseRoutes } from "./app/module/volunteerresponse/Volunteerresponse.routes";
 // import { userRouter } from "./app/module/user/user.router";
 const app: Application = express();
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/emergency", emergencyRouter)
 app.use("/api/v1/volunteer", volunteerRouter)
+app.use("/api/v1/volunteer-response", volunteerResponseRoutes)
 app.get('/', (req, res) => {
     res.send("Helps Near successfully running")
 });
