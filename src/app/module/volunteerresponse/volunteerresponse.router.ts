@@ -2,8 +2,9 @@ import express, { Router } from "express";
 import { checkAuth } from "../../../middleware/checkAuth";
 import { validateRequest } from "../../../middleware/validateRequest";
 import { Role } from "../../../generated/prisma/enums";
-import { volunteerResponseController } from "./Volunteerresponse.controller";
-import { volunteerResponseValidation } from "./Volunteerresponse.validation";
+import { volunteerResponseController } from "./volunteerresponse.controller";
+import { volunteerResponseValidation } from "./volunteerresponse.validation";
+
 ;
 
 const router = express.Router();

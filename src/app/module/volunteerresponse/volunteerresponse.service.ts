@@ -1,7 +1,7 @@
 import status from "http-status";
 import AppError from "../../errorHelper/appError";
 import { prisma } from "../../lib/prisma";
-import { ICreateVolunteerResponse } from "./Volunteerresponse.interface";
+import { ICreateVolunteerResponse } from "./volunteerresponse.interface";
 
 
 

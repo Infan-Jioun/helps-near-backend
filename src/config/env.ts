@@ -20,6 +20,8 @@ interface IEnvConfig {
     REFRESH_TOKEN_EXPIRES_IN: string
     BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN: string
     BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: string
+    STRIPE_WEBHOOK_SECRET: string,
+    STRIPE_SECRET_KEY: string
 }
 const loadEnvVaribales = (): IEnvConfig => {
     const requireEnvVariables = [
@@ -39,7 +41,9 @@ const loadEnvVaribales = (): IEnvConfig => {
         "ACCESS_TOKEN_EXPIRES_IN",
         "REFRESH_TOKEN_EXPIRES_IN",
         "BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN",
-        "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE"
+        "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE",
+        "STRIPE_WEBHOOK_SECRET",
+        "STRIPE_SECRET_KEY"
 
     ]
     requireEnvVariables.forEach((variable) => {
@@ -65,6 +69,8 @@ const loadEnvVaribales = (): IEnvConfig => {
         REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN as string,
         BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN as string,
         BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE as string,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string
     }
 }
 export const envConfig = loadEnvVaribales();

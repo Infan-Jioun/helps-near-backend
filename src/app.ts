@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors"
 import { envConfig } from "./config/env";
 import { notFound } from "./middleware/notFound";
@@ -12,7 +12,7 @@ import { emergencyRouter } from "./app/module/emergency/emergency.router";
 import { globalErrorHandlar } from "./middleware/globalHandelError";
 import { userRouter } from "./app/module/user/user.router";
 import { volunteerRouter } from "./app/module/volunteer/volunteer.router";
-import { volunteerResponseRoutes } from "./app/module/volunteerresponse/Volunteerresponse.routes";
+import { volunteerResponseRoutes } from "./app/module/volunteerresponse/volunteerresponse.router";
 // import { userRouter } from "./app/module/user/user.router";
 const app: Application = express();
 app.use(express.json());
@@ -25,6 +25,10 @@ app.use(cors({
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     allowedHeaders: ["content-type", "Authorization"]
 }))
+app.post("/webhook", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
+    console.log("Webhook recivied:", req.body);
+    res.status(200).json({ recivied: true })
+})
 app.set("query parser", (str: string) => qs.parse(str));
 app.use("/api/auth", toNodeHandler(auth))
 app.use(cookieParser());
