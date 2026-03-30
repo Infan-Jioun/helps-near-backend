@@ -1,10 +1,10 @@
 import express, { Router } from "express";
 import { checkAuth } from "../../../middleware/checkAuth";
-import { Role } from "../../../generated/prisma/enums";
 import { validateRequest } from "../../../middleware/validateRequest";
 import { userController } from "./user.controller";
 import { UserValidation } from "./user.validation";
 import { volunteerValidation } from "../volunteer/volunteer.validation";
+import { Role } from "../../../generated/prisma/client/enums";
 const router = express.Router();
 router.post("/create-volunteer", validateRequest(UserValidation.createVolunteerProfileSchema),
     userController.createVolunteer

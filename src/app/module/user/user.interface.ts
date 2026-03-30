@@ -1,4 +1,4 @@
-import { Role, Status, BloodGroup, VolunteerSkill } from "../../../generated/prisma/enums";
+import { Role, Status, BloodGroup, VolunteerSkill } from "../../../generated/prisma/client/enums";
 export interface ICreateVolunteerProfile {
     name: string;
     email: string;

@@ -1,9 +1,9 @@
 import express, { Router } from "express";
 import { emargencyController } from "./emergency.controller";
 import { checkAuth } from "../../../middleware/checkAuth";
-import { Role } from "../../../generated/prisma/enums";
 import { validateRequest } from "../../../middleware/validateRequest";
 import { createEmergencySchema, updateEmergencySchema } from "./emergency.validation"
+import { Role } from "../../../generated/prisma/client/enums";
 
 const router = express.Router();
 

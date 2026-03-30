@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Role, Status, BloodGroup, VolunteerSkill } from "../../../generated/prisma/enums";
+import { Role, Status, BloodGroup, VolunteerSkill } from "../../../generated/prisma/client/enums";
 export const createVolunteerProfileSchema = z.object({
     name: z.string().min(2).max(100, { error: "Name is required" }),
     email: z.string().email({ error: "Valid email required" }),

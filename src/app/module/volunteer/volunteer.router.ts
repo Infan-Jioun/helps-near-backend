@@ -1,9 +1,9 @@
 import express, { Router } from "express";
 import { checkAuth } from "../../../middleware/checkAuth";
-import { Role } from "../../../generated/prisma/enums";
 import { validateRequest } from "../../../middleware/validateRequest";
 import { volunteerController } from "./volunteer.controller";
 import { volunteerValidation } from "./volunteer.validation";
+import { Role } from "../../../generated/prisma/client/enums";
 const router = express.Router();
 router.get("/", checkAuth(Role.ADMIN), volunteerController.getAllVolunteers)
 router.get(

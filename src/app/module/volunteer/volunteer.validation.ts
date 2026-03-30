@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { VolunteerSkill } from "../../../generated/prisma/enums";
+import { VolunteerSkill } from "../../../generated/prisma/client/enums";
 
 
 

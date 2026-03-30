@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EmergencyStatus, EmergencyType } from "../../../generated/prisma/enums";
+import { EmergencyStatus, EmergencyType } from "../../../generated/prisma/client/enums";
 
 export const createEmergencySchema = z.object({
     type: z.nativeEnum(EmergencyType, {

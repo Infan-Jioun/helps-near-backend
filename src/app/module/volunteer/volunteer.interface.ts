@@ -1,4 +1,5 @@
-import { VolunteerSkill } from "../../../generated/prisma/enums";
+import { VolunteerSkill } from "../../../generated/prisma/client/enums";
+
 
 
 
