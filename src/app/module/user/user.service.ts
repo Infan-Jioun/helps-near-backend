@@ -1,9 +1,11 @@
 import status from "http-status";
-import { Prisma, Role } from "../../../generated/prisma/client";
+
 import AppError from "../../errorHelper/appError";
 import { prisma } from "../../lib/prisma";
 import { ICreateVolunteerProfile, IUpdateMyProfile, IUpdateUserRole, IUpdateUserStatus, IUserFilterRequest, } from "./user.interface";
 import { auth } from "../../lib/auth";
+import { Role } from "../../../generated/prisma/client/enums";
+import { Prisma } from "../../../generated/prisma/client/client";
 
 const createVolunteer = async (payload: ICreateVolunteerProfile) => {
     const { name, email, password, ...profileData } = payload;
