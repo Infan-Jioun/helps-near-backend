@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { Role, Status } from "../generated/prisma/enums";
 import { cookieUtils } from "../app/utils/cookie";
 import AppError from "../app/errorHelper/appError";
 import status from "http-status";
 import { prisma } from "../app/lib/prisma";
 import { jwtUtils } from "../app/utils/jwt";
 import { envConfig } from "../config/env";
+import { Role, Status } from "../generated/prisma/client/enums";
 
 
 export const checkAuth = (...authRols: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
