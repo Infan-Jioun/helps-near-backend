@@ -133,6 +133,28 @@ const verifyEmail = async (otp: string, email: string) => {
     }
     return result;
 }
+const resendOtp = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: { email }
+  });
+
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
+  if (user.emailVerified) {
+    throw new AppError(status.BAD_REQUEST, "Email already verified");
+  }
+  const result = await auth.api.sendVerificationOTP({
+    body: {
+      email,
+      type: "email-verification"
+    }
+  });
+
+  return result;
+};
+
 const logout = async (sessionToken: string) => {
     const result = await auth.api.signOut({
         headers: {
@@ -195,6 +217,7 @@ export const authService = {
     loginUser,
     getMyProfile,
     verifyEmail,
+    resendOtp,
     logout,
     getNewToken
 }
