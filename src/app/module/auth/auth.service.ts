@@ -223,6 +223,37 @@ const getNewToken = async (refreshToken: string, sessionToken: string) => {
         sessionToken: updateSession.token
     }
 }
+const googleLoginSuccess = async (session: Record<string, any>) => {
+    const isPatientExists = await prisma.user.findUnique({
+        where: {
+            id: session.id
+        }
+    })
+    if (!isPatientExists) {
+        await prisma.user.create({
+            data: {
+                id: session.user.id,
+                name: session.user.name,
+                email: session.user.email
+            }
+        })
+    }
+    // ! access token and refresh token create
+    const accessToken = tokenUtils.getAccessToken({
+        id: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    })
+    const refreshToken = tokenUtils.getRefreshToken({
+        id: session.user.id,
+        role: session.user.role,
+        name: session.user.name
+    })
+    return {
+        accessToken,
+        refreshToken
+    }
+}
 export const authService = {
     createUser,
     loginUser,
@@ -230,5 +261,6 @@ export const authService = {
     verifyEmail,
     resendOtp,
     logout,
-    getNewToken
+    getNewToken,
+    googleLoginSuccess
 }

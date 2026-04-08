@@ -14,4 +14,6 @@ router.post("/verify-email", authController.verifyEmail)
 router.post("/resend-otp", authController.resendOtp)
 router.post("/logout", authController.logout)
 router.post("/refresh-token", authController.getNewToken)
+router.get("/login/google", authController.googleLogin)
+router.get("/google/success", authController.googleLoginSuccess)
 export const authRouter: Router = router

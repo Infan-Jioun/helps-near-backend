@@ -14,11 +14,11 @@ export const auth = betterAuth({
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
     socialProviders: {
-       google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID as string, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
-        },  
-    }
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
+    },
     // trustedOrigins: async (request) => {
     //     const origin = request?.headers.get("origin");
 
@@ -42,7 +42,7 @@ export const auth = betterAuth({
 
     //     return [];
     // },
-   trustedOrigins : [process.env.FRONTEND_URL! || "https://helps-near-frontend.vercel.app", process.env.BETTER_AUTH_URL! || "https://helps-near-backend-blond.vercel.app"],
+    trustedOrigins: [process.env.FRONTEND_URL! || "https://helps-near-frontend.vercel.app", process.env.BETTER_AUTH_URL! || "https://helps-near-backend-blond.vercel.app"],
 
     emailAndPassword: {
         enabled: true,
@@ -75,7 +75,7 @@ export const auth = betterAuth({
                         }
                     })
                     if (user && !user.emailVerified) {
-                       await sendEmail({
+                        await sendEmail({
                             to: email,
                             subject: "Verify your email",
                             templateName: "otp",
