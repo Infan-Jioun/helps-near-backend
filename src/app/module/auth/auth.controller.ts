@@ -183,6 +183,10 @@ const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
 
     res.redirect(`${envConfig.FRONTEND_URL}${finalRedirectPath}`);
 });
+const handelAuthError = catchAsync((req: Request, res: Response) => {
+    const error = req.query.error as string || "oauth_failed";
+    res.redirect(`${envConfig.FRONTEND_URL}/login?error=${error}`)
+})
 export const authController = {
     createUser,
     loginUser,
@@ -192,5 +196,6 @@ export const authController = {
     logout,
     getNewToken,
     googleLoginSuccess,
-    googleLogin
+    googleLogin,
+    handelAuthError
 }

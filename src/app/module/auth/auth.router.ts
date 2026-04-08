@@ -16,4 +16,5 @@ router.post("/logout", authController.logout)
 router.post("/refresh-token", authController.getNewToken)
 router.get("/login/google", authController.googleLogin)
 router.get("/google/success", authController.googleLoginSuccess)
+router.get("/oauth/error", authController.handelAuthError)
 export const authRouter: Router = router
