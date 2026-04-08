@@ -31,20 +31,28 @@ const createEmargency = catchAsync(
 )
 const getAllEmargencies = catchAsync(async (req: Request, res: Response) => {
     const { type, status, district, isPriority, page, limit } = req.query;
+
     const result = await emargencyService.getAllEmargencies({
         type: type as string,
         status: status as string,
         district: district as string,
         isPriority: isPriority as string,
         page: Number(page) || 1,
-        limit: Number(limit) || 20,
+        limit: Number(limit) || 9,
     });
     sendResposne(res, {
         httpStatusCode: 200,
         message: "Emergencies fetched successfully!",
         success: true,
-        data: result,
+        data: result.data,
+        meta: {
+            page: result.meta.page,
+            limit: result.meta.limit,
+            total: result.meta.total,
+            totalPage: result.meta.totalPages
+        },
     });
+
 });
 
 const getEmargencyById = catchAsync(async (req: Request, res: Response) => {
