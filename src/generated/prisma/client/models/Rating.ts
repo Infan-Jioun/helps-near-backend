@@ -206,7 +206,7 @@ export type RatingGroupByOutputType = {
   _max: RatingMaxAggregateOutputType | null
 }
 
-type GetRatingGroupByPayload<T extends RatingGroupByArgs> = Prisma.PrismaPromise<
+export type GetRatingGroupByPayload<T extends RatingGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RatingGroupByOutputType, T['by']> &
       {

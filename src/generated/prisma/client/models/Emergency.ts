@@ -259,7 +259,7 @@ export type EmergencyGroupByOutputType = {
   _max: EmergencyMaxAggregateOutputType | null
 }
 
-type GetEmergencyGroupByPayload<T extends EmergencyGroupByArgs> = Prisma.PrismaPromise<
+export type GetEmergencyGroupByPayload<T extends EmergencyGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<EmergencyGroupByOutputType, T['by']> &
       {

@@ -199,7 +199,7 @@ export type VolunteerResponseGroupByOutputType = {
   _max: VolunteerResponseMaxAggregateOutputType | null
 }
 
-type GetVolunteerResponseGroupByPayload<T extends VolunteerResponseGroupByArgs> = Prisma.PrismaPromise<
+export type GetVolunteerResponseGroupByPayload<T extends VolunteerResponseGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VolunteerResponseGroupByOutputType, T['by']> &
       {
