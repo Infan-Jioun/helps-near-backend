@@ -49,12 +49,12 @@ const getAllLogs = catchAsync(async (req: Request, res: Response) => {
     })
 })
 const saveFrontendLog = catchAsync(async (req: Request, res: Response) => {
-    await userService.saveFrontendLog(req.body);
+    const result = await userService.saveFrontendLog(req.body);
     sendResposne(res, {
         httpStatusCode: status.OK,
         success: true,
         message: "Frontend log saved",
-        data: null,
+        data: result,
     });
 });
 const getUserById = catchAsync(async (req: Request, res: Response) => {

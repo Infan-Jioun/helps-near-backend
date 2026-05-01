@@ -104,7 +104,7 @@ const getAllLogs = async () => {
         if (err.code !== "ENOENT") throw err;
     }
 
- 
+
     let frontendLogs: object[] = [];
     try {
         const raw = await fs.readFile(frontendLogPath, "utf-8");
@@ -125,10 +125,18 @@ const getAllLogs = async () => {
 
     return allLogs;
 };
-const saveFrontendLog = async (logData: object) => {
+const saveFrontendLog = async (logData: any) => {
     const logPath = path.join(logDir, "frontend.log");
-    await ensureLogDir();
-    await fs.appendFile(logPath, JSON.stringify(logData) + "\n", "utf-8");
+    const safeLog = {
+        timestamp: logData.timestamp,
+        method: logData.method,
+        path: logData.path,
+        userAgent: logData.userAgent,
+        ip: logData.ip,
+        userId: logData.userId,
+        role: logData.role,
+    };
+    await fs.appendFile(logPath, JSON.stringify(safeLog) + "\n", "utf-8");
 };
 const getAllUsers = async (filters: IUserFilterRequest) => {
     const { role, status, searchTerm, page = 1, limit = 10 } = filters;
@@ -286,7 +294,7 @@ export const userService = {
     createVolunteer,
     getAllUsers,
     getAllLogs,
-    saveFrontendLog,
+   saveFrontendLog,
     getUserById,
     updateUserRole,
     updateUserStatus,

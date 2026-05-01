@@ -7,6 +7,13 @@ import { jwtUtils } from "../app/utils/jwt";
 import { envConfig } from "../config/env";
 import { Role, Status } from "../generated/prisma/client/enums";
 
+// export const checkInternalSecret = (req: Request, res: Response, next: NextFunction) => {
+//     const secret = req.headers["x-internal-secret"];
+//     if (secret === process.env.INTERNAL_SECRET) {
+//         return next(); 
+//     }
+//     return res.status(401).json({ message: "Unauthorized" });
+// };
 
 export const checkAuth = (...authRols: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {

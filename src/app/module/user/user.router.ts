@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { checkAuth } from "../../../middleware/checkAuth";
+import { checkAuth, } from "../../../middleware/checkAuth";
 import { validateRequest } from "../../../middleware/validateRequest";
 import { userController } from "./user.controller";
 import { UserValidation } from "./user.validation";
@@ -9,8 +9,10 @@ const router = express.Router();
 router.post("/create-volunteer", validateRequest(UserValidation.createVolunteerProfileSchema),
     userController.createVolunteer
 );
-router.get("/logs", checkAuth(Role.ADMIN), userController.getAllLogs)
-router.post("/frontend", checkAuth(Role.ADMIN), userController.saveFrontendLog);
+router.get("/backend-logs", checkAuth(Role.ADMIN), userController.getAllLogs)
+router.get("/frontend-logs", checkAuth(Role.ADMIN), userController.saveFrontendLog);
+// router.get("/frontend-logs", checkAuth(Role.ADMIN), userController.getFrontendLogs);
+
 router.get("/", checkAuth(Role.ADMIN), userController.getAllUsers);
 
 router.get("/:id", checkAuth(Role.ADMIN), userController.getUserById);
