@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/create-volunteer", validateRequest(UserValidation.createVolunteerProfileSchema),
     userController.createVolunteer
 );
+router.get("/logs", checkAuth(Role.ADMIN), userController.getAllLogs)
 router.get("/", checkAuth(Role.ADMIN), userController.getAllUsers);
 
 router.get("/:id", checkAuth(Role.ADMIN), userController.getUserById);

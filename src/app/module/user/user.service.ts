@@ -6,7 +6,8 @@ import { ICreateVolunteerProfile, IUpdateMyProfile, IUpdateUserRole, IUpdateUser
 import { auth } from "../../lib/auth";
 import { Role } from "../../../generated/prisma/client/enums";
 import { Prisma } from "../../../generated/prisma/client/client";
-
+import path from "path";
+import fs from "fs/promises";
 const createVolunteer = async (payload: ICreateVolunteerProfile) => {
     const { name, email, password, ...profileData } = payload;
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -46,6 +47,7 @@ const createVolunteer = async (payload: ICreateVolunteerProfile) => {
                     userId: userData.user.id,
                     name,
                     email,
+                    fee: profileData.fee ?? null,
                     nidNumber: profileData.nidNumber ?? null,
                     skills: profileData.skills ?? [],
                     bio: profileData.bio ?? null,
@@ -81,7 +83,20 @@ const createVolunteer = async (payload: ICreateVolunteerProfile) => {
         throw new AppError(status.INTERNAL_SERVER_ERROR, "Failed to create volunteer profile");
     }
 };
+const getAllLogs = async () => {
+    const logPath = path.resolve(process.cwd(), "logs", "access.log");
 
+    const raw = await fs.readFile(logPath, "utf-8");
+
+    const logs = raw
+        .trim()
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line))
+        .reverse(); // latest first
+
+    return logs;
+};
 const getAllUsers = async (filters: IUserFilterRequest) => {
     const { role, status, searchTerm, page = 1, limit = 10 } = filters;
     const skip = (Number(page) - 1) * Number(limit);
@@ -237,6 +252,7 @@ const deleteUser = async (userId: string) => {
 export const userService = {
     createVolunteer,
     getAllUsers,
+    getAllLogs,
     getUserById,
     updateUserRole,
     updateUserStatus,

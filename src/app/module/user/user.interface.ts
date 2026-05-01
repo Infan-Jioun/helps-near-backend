@@ -8,6 +8,7 @@ export interface ICreateVolunteerProfile {
     bio?: string;
     latitude?: number;
     longitude?: number;
+    fee: number
 }
 export interface IUpdateUserRole {
     role: Role;

@@ -39,7 +39,15 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-
+const getAllLogs = catchAsync(async (req: Request, res: Response) => {
+    const result = await userService.getAllLogs();
+    sendResposne(res, {
+        httpStatusCode: status.OK,
+        message: "Logs Succesfully fetched",
+        data: result,
+        success: true
+    })
+})
 const getUserById = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await userService.getUserById(id as string);
@@ -98,13 +106,14 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
         httpStatusCode: status.OK,
         success: true,
         message: "Deleted user successfully",
-       
+
         data: result
     });
 });
 export const userController = {
     createVolunteer,
     getAllUsers,
+    getAllLogs,
     getUserById,
     updateUserRole,
     updateUserStatus,

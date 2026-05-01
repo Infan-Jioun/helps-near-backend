@@ -1,0 +1,2 @@
+{"timestamp":"2026-05-01T16:10:37.664Z","method":"GET","endpoint":"/","statusCode":201,"responseTime":"4.57ms","ip":"::1","userAgent":"PostmanRuntime/7.53.0"}
+{"timestamp":"2026-05-01T20:47:23.012Z","method":"GET","endpoint":"/api/v1/users/logs","statusCode":200,"responseTime":"9.96ms","ip":"::1","userAgent":"PostmanRuntime/7.53.0"}
