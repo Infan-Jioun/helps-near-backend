@@ -8,6 +8,11 @@ import { Role } from "../../../generated/prisma/client/enums";
 import { Prisma } from "../../../generated/prisma/client/client";
 import path from "path";
 import fs from "fs/promises";
+const logDir = path.resolve(process.cwd(), "logs");
+
+const ensureLogDir = async () => {
+    await fs.mkdir(logDir, { recursive: true });
+};
 const createVolunteer = async (payload: ICreateVolunteerProfile) => {
     const { name, email, password, ...profileData } = payload;
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -84,18 +89,46 @@ const createVolunteer = async (payload: ICreateVolunteerProfile) => {
     }
 };
 const getAllLogs = async () => {
-    const logPath = path.resolve(process.cwd(), "logs", "access.log");
+    const accessLogPath = path.join(logDir, "access.log");
+    const frontendLogPath = path.join(logDir, "frontend.log");
 
-    const raw = await fs.readFile(logPath, "utf-8");
+    let backendLogs: object[] = [];
+    try {
+        const raw = await fs.readFile(accessLogPath, "utf-8");
+        backendLogs = raw
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => ({ ...JSON.parse(line), source: "backend" }));
+    } catch (err: any) {
+        if (err.code !== "ENOENT") throw err;
+    }
 
-    const logs = raw
-        .trim()
-        .split("\n")
-        .filter(Boolean)
-        .map((line) => JSON.parse(line))
-        .reverse(); // latest first
+ 
+    let frontendLogs: object[] = [];
+    try {
+        const raw = await fs.readFile(frontendLogPath, "utf-8");
+        frontendLogs = raw
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => ({ ...JSON.parse(line), source: "frontend" }));
+    } catch (err: any) {
+        if (err.code !== "ENOENT") throw err;
+    }
 
-    return logs;
+
+    const allLogs = [...backendLogs, ...frontendLogs].sort(
+        (a: any, b: any) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    return allLogs;
+};
+const saveFrontendLog = async (logData: object) => {
+    const logPath = path.join(logDir, "frontend.log");
+    await ensureLogDir();
+    await fs.appendFile(logPath, JSON.stringify(logData) + "\n", "utf-8");
 };
 const getAllUsers = async (filters: IUserFilterRequest) => {
     const { role, status, searchTerm, page = 1, limit = 10 } = filters;
@@ -253,9 +286,12 @@ export const userService = {
     createVolunteer,
     getAllUsers,
     getAllLogs,
+    saveFrontendLog,
     getUserById,
     updateUserRole,
     updateUserStatus,
     updateMyProfile,
     deleteUser
 };
+
+

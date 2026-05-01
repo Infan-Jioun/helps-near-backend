@@ -21,21 +21,28 @@ export const requestLogger = async (
             const endTime = process.hrtime.bigint();
             const responseTimeMs = Number(endTime - startTime) / 1_000_000;
 
+            const rawIp =
+                (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim()
+                ?? req.ip
+                ?? req.socket.remoteAddress
+                ?? "unknown";
+
+            const cleanIp = rawIp.replace(/^::ffff:/, "");
+
             const logEntry = JSON.stringify({
                 timestamp: new Date().toISOString(),
                 method: req.method,
                 endpoint: req.originalUrl,
                 statusCode: res.statusCode,
                 responseTime: `${responseTimeMs.toFixed(2)}ms`,
-                ip: req.ip,
-                userAgent: req.headers["user-agent"],
-            
+                ip: cleanIp,
+                userAgent: req.headers["user-agent"] ?? "unknown",
             });
 
             await ensureLogDir();
             await fs.appendFile(accessLogPath, logEntry + "\n", "utf-8");
         } catch (err) {
-            console.error("Failed to write access log:", err);
+            console.error(" Failed to write access log:", err);
         }
     });
 

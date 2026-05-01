@@ -48,6 +48,15 @@ const getAllLogs = catchAsync(async (req: Request, res: Response) => {
         success: true
     })
 })
+const saveFrontendLog = catchAsync(async (req: Request, res: Response) => {
+    await userService.saveFrontendLog(req.body);
+    sendResposne(res, {
+        httpStatusCode: status.OK,
+        success: true,
+        message: "Frontend log saved",
+        data: null,
+    });
+});
 const getUserById = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await userService.getUserById(id as string);
@@ -114,6 +123,7 @@ export const userController = {
     createVolunteer,
     getAllUsers,
     getAllLogs,
+    saveFrontendLog,
     getUserById,
     updateUserRole,
     updateUserStatus,

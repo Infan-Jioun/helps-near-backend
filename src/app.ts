@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), `src/app/templates`));
 app.set("query parser", (str: string) => qs.parse(str));
-
+app.set("trust proxy", true);
 app.post("/webhook", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
     console.log("Webhook recivied:", req.body);
     res.status(200).json({ recivied: true });
