@@ -10,7 +10,7 @@ router.post("/create-volunteer", validateRequest(UserValidation.createVolunteerP
     userController.createVolunteer
 );
 router.get("/logs", checkAuth(Role.ADMIN), userController.getAllLogs)
-router.post("/frontend", userController.saveFrontendLog);
+router.post("/frontend", checkAuth(Role.ADMIN), userController.saveFrontendLog);
 router.get("/", checkAuth(Role.ADMIN), userController.getAllUsers);
 
 router.get("/:id", checkAuth(Role.ADMIN), userController.getUserById);
