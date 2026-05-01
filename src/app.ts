@@ -18,6 +18,7 @@ import cookieParser from "cookie-parser";
 import qs from "qs";
 import { globalErrorHandlar } from "./middleware/globalHandelError";
 import { requestLogger } from "./middleware/requestLogger";
+import { success } from "better-auth";
 // import { userRouter } from "./app/module/user/user.router";
 const app: Application = express();
 
@@ -55,8 +56,11 @@ app.use("/api/v1/volunteer", volunteerRouter);
 app.use("/api/v1/volunteer-response", volunteerResponseRoutes);
 app.use("/api/v1/payment", paymentRouter);
 
-app.get("/", (req, res) => {
-    res.send("Helps Near successfully running");
+app.get("/", (req: Request, res: Response) => {
+    res.status(201).json({
+        success: true,
+        message: "Helps Near Api is Successfully running"
+    });
 });
 
 app.use(globalErrorHandlar);
