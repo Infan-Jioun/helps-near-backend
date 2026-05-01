@@ -17,6 +17,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import qs from "qs";
 import { globalErrorHandlar } from "./middleware/globalHandelError";
+import { requestLogger } from "./middleware/requestLogger";
 // import { userRouter } from "./app/module/user/user.router";
 const app: Application = express();
 
@@ -35,7 +36,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req: Requ
 // app.get("/api/auth/callback/:provider", toNodeHandler(auth));
 app.all("/api/auth/*path", toNodeHandler(auth));
 
-// তারপর CORS
+app.use(requestLogger)
 app.use(cors({
     origin: [
         envConfig.FRONTEND_URL || "https://helps-near-frontend.vercel.app",
