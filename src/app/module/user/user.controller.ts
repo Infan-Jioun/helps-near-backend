@@ -48,6 +48,17 @@ const getAllLogs = catchAsync(async (req: Request, res: Response) => {
         success: true
     })
 })
+
+const getFrontendLogs = catchAsync(async (req: Request, res: Response) => {
+    const result = await userService.getFrontendLogs();
+    sendResposne(res, {
+        httpStatusCode: status.OK,
+        message: "Frontend logs fetched successfully",
+        data: result,
+        success: true
+    })
+})
+
 const saveFrontendLog = catchAsync(async (req: Request, res: Response) => {
     const result = await userService.saveFrontendLog(req.body);
     sendResposne(res, {
@@ -124,6 +135,7 @@ export const userController = {
     getAllUsers,
     getAllLogs,
     saveFrontendLog,
+    getFrontendLogs,
     getUserById,
     updateUserRole,
     updateUserStatus,

@@ -9,8 +9,9 @@ const router = express.Router();
 router.post("/create-volunteer", validateRequest(UserValidation.createVolunteerProfileSchema),
     userController.createVolunteer
 );
-router.get("/backend-logs", checkAuth(Role.ADMIN), userController.getAllLogs)
-router.get("/frontend-logs", checkAuth(Role.ADMIN), userController.saveFrontendLog);
+router.post("/frontend-logs", userController.saveFrontendLog); // auth নেই — middleware থেকে call হয়
+router.get("/frontend-logs", checkAuth(Role.ADMIN), userController.getFrontendLogs); // নতুন GET
+router.get("/backend-logs", checkAuth(Role.ADMIN), userController.getAllLogs);
 // router.get("/frontend-logs", checkAuth(Role.ADMIN), userController.getFrontendLogs);
 
 router.get("/", checkAuth(Role.ADMIN), userController.getAllUsers);

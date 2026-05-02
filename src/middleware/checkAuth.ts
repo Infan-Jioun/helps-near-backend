@@ -15,71 +15,64 @@ import { Role, Status } from "../generated/prisma/client/enums";
 //     return res.status(401).json({ message: "Unauthorized" });
 // };
 
-export const checkAuth = (...authRols: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
-    try {
+export const checkAuth = (...authRols: Role[]) =>
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // ── Method 1: Better Auth session ──
+            const sessionToken = cookieUtils.getCookie(req, "better-auth-session_token");
+            if (sessionToken) {
+                const sessionExists = await prisma.session.findFirst({
+                    where: { token: sessionToken, expiresAt: { gt: new Date() } },
+                    include: { user: true },
+                });
 
-        const sessionToken = cookieUtils.getCookie(req, "better-auth-session_token");
-        if (!sessionToken) {
-            throw new AppError(status.UNAUTHORIZED, "Unauthorzied access! No session token provided")
-        }
-        if (sessionToken) {
-            const sessionExists = await prisma.session.findFirst({
-                where: {
-                    token: sessionToken,
-                    expiresAt: {
-                        gt: new Date()
+                if (sessionExists?.user) {
+                    const user = sessionExists.user;
+
+                    if (user.status === Status.BLOCKED || user.status === Status.DELETED) {
+                        throw new AppError(status.UNAUTHORIZED, "User is not active");
                     }
-                },
-                include: {
-                    user: true
-                }
-            })
+                    if (authRols.length > 0 && !authRols.includes(user.role as Role)) {
+                        throw new AppError(status.FORBIDDEN, "Forbidden access!");
+                    }
 
-            if (sessionExists && sessionExists.user) {
-                const user = sessionExists.user;
-                const now = new Date();
-                const expiresAt = new Date(sessionExists.expiresAt)
-                const createdAt = new Date(sessionExists.createdAt)
-                const sessionLifeTime = expiresAt.getTime() - createdAt.getTime();
-                const timeRemaning = expiresAt.getTime() - now.getTime();
-                const percentRemaning = (timeRemaning / sessionLifeTime) * 100;
-                if (percentRemaning < 20) {
-                    res.setHeader("X-Session-Refresh", "true");
-                    res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
-                    res.setHeader("X-Time-Remaining", timeRemaning.toString())
-                    console.log("Session Expiring soon!!");
-                }
-                if (user.status === Status.BLOCKED || user.status === Status.DELETED) {
-                    throw new AppError(status.UNAUTHORIZED, "Unauthorzied access! User is not active")
-                }
+                    req.user = {
+                        userId: user.id,
+                        role: user.role as Role, // ✅
+                        email: user.email,
+                    };
 
-                if (authRols.length > 0 && !authRols.includes(user.role as Role)) {
-                    throw new AppError(status.FORBIDDEN, "Forbidden access! You have not permission to access this resource.")
+                    return next(); // ✅ session valid হলে এখানেই শেষ
                 }
-                req.user = {
-                    userId: user.id,
-                    role: user.role,
-                    email: user.email
-                }
-
             }
 
+            // ── Method 2: JWT accessToken ──
+            const accessToken =
+                cookieUtils.getCookie(req, "accessToken") ??
+                req.headers.authorization?.replace("Bearer ", "");
 
-            const accessToken = cookieUtils.getCookie(req, "accessToken");
             if (!accessToken) {
-                throw new AppError(status.UNAUTHORIZED, "Unauthorzied access! No session token provided")
+                throw new AppError(status.UNAUTHORIZED, "No token provided");
             }
-            const verfiedToken = jwtUtils.verifyToken(accessToken, envConfig.ACCESS_TOKEN_SECRET);
-            if (!verfiedToken.success) {
-                throw new AppError(status.UNAUTHORIZED, "Unauthorzied access! invaild access token")
-            }
-            if (authRols.length > 0 && !authRols.includes(verfiedToken.data!.role as Role)) {
-                throw new AppError(status.FORBIDDEN, "Forbidden access! You have not permission to access this resource.")
-            }
-            next();
-        }
 
-    } catch (error) {
-        next(error)
-    }
-} 
+            const verifiedToken = jwtUtils.verifyToken(accessToken, envConfig.ACCESS_TOKEN_SECRET);
+            if (!verifiedToken.success) {
+                throw new AppError(status.UNAUTHORIZED, "Invalid access token");
+            }
+
+            if (authRols.length > 0 && !authRols.includes(verifiedToken.data!.role as Role)) {
+                throw new AppError(status.FORBIDDEN, "Forbidden access!");
+            }
+
+            req.user = {
+                userId: verifiedToken.data!.id,
+                role: verifiedToken.data!.role as Role, // ✅
+                email: verifiedToken.data!.email,
+            };
+
+            next();
+
+        } catch (error) {
+            next(error);
+        }
+    };

@@ -127,6 +127,7 @@ const getAllLogs = async () => {
 };
 const saveFrontendLog = async (logData: any) => {
     const logPath = path.join(logDir, "frontend.log");
+    await ensureLogDir(); // ← এটা ছিল না!
     const safeLog = {
         timestamp: logData.timestamp,
         method: logData.method,
@@ -137,6 +138,22 @@ const saveFrontendLog = async (logData: any) => {
         role: logData.role,
     };
     await fs.appendFile(logPath, JSON.stringify(safeLog) + "\n", "utf-8");
+};
+
+const getFrontendLogs = async () => {
+    const frontendLogPath = path.join(logDir, "frontend.log");
+    try {
+        const raw = await fs.readFile(frontendLogPath, "utf-8");
+        return raw
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => ({ ...JSON.parse(line), source: "frontend" }))
+            .reverse();
+    } catch (err: any) {
+        if (err.code === "ENOENT") return [];
+        throw err;
+    }
 };
 const getAllUsers = async (filters: IUserFilterRequest) => {
     const { role, status, searchTerm, page = 1, limit = 10 } = filters;
@@ -294,7 +311,8 @@ export const userService = {
     createVolunteer,
     getAllUsers,
     getAllLogs,
-   saveFrontendLog,
+    saveFrontendLog,
+    getFrontendLogs,
     getUserById,
     updateUserRole,
     updateUserStatus,
